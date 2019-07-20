@@ -67,6 +67,7 @@ class PersonForm extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmitClick = this.handleSubmitClick.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
+        this.handleVatChange = this.handleVatChange.bind(this);
     }
 
     handleProvinceChange(newProvince) {
@@ -87,6 +88,12 @@ class PersonForm extends React.Component {
         });
     }
 
+    handleVatChange(newVat) {
+        this.setState({
+            vatCondition: newVat
+        });
+    }
+
     handleSubmitClick() {
         console.log(this.state);
 
@@ -99,7 +106,17 @@ class PersonForm extends React.Component {
           body: JSON.stringify({
             name: this.state.name,
             lastName: this.state.lastName,
-            city: this.state.city
+            email: this.state.email,
+            city: this.state.city,
+            deliveryAddress: this.state.deliveryAddress,
+            phone: this.state.phone,
+            street: this.state.street,
+            streetNumber: this.state.streetNumber,
+            neighbourhood: this.state.neighbourhood,
+            fiscalNumber: this.state.fiscalNumber,
+            accountDays: this.state.accountDays,
+            accountAmount: this.state.accountAmount,
+            vatCondition: this.state.vatCondition
           })
         })
     }
@@ -109,13 +126,82 @@ class PersonForm extends React.Component {
             <table class='rs-table'>
                 <TextInputRow field={"name"} text={"Nombre"} onInputChange={this.handleInputChange} />
                 <TextInputRow field={"lastName"} text={"Apellido"} onInputChange={this.handleInputChange} />
-                <TextInputRow field={"address"} text={"Direccion"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"email"} text={"Email"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"deliveryAddress"} text={"Direccion de envio"} onInputChange={this.handleInputChange} />
                 <TextInputRow field={"phone"} text={"Telefono"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"street"} text={"Calle"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"streetNumber"} text={"Numero"} onInputChange={this.handleInputChange} />
+                <VatCondition field={"vatCondition"} text={"Condicion fiscal"} onVatChange={this.handleVatChange} />
+                <TextInputRow field={"neighbourhood"} text={"Barrio"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"fiscalNumber"} text={"Numero fiscal"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"accountDays"} text={"Dias en CC"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"accountAmount"} text={"Monto en CC"} onInputChange={this.handleInputChange} />
                 <ProvinceRow field={"province"} text={"Provincia"} onProvinceChange={this.handleProvinceChange} />
                 <CityRow field={"city"} text={"Ciudad"} onCityChange={this.handleCityChange} province={this.state.province} />
                 <PersonSubmit text={"Registrar"} onSubmitClick={this.handleSubmitClick} />
             </table>
         );
+    }
+}
+
+class VatCondition extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            error: null,
+            isLoaded: false,
+            items: [],
+            vat: null
+        };
+        this.handleVatChange = this.handleVatChange.bind(this);
+    }
+
+    handleVatChange(e) {
+        this.props.onVatChange(e.target.value);
+    }
+
+    componentDidMount() {
+        fetch("http://localhost:8090/vat-conditions")
+            .then(res => res.json() )
+            .then(
+                (result) => {
+                    console.log(result);
+                    this.setState({
+                        isLoaded: true,
+                        items: result
+                    });
+                },
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
+    }
+
+    render() {
+        const { error, isLoaded, items } = this.state;
+        if (error) {
+            return <div>Error: {error.message}</div>;
+        } else if (!isLoaded) {
+            return <div>Loading...</div>;
+        } else {
+            return (
+                <tr>
+                    <td><p>{this.props.text}</p></td>
+                    <td>
+                        <select onChange={this.handleVatChange} >
+                            {items.map(item => (
+                                <option value={item}>
+                                    {item}
+                                </option>
+                            ))}
+                        </select>
+                    </td>
+                </tr>
+            );
+        }
     }
 }
 
@@ -145,10 +231,10 @@ class PersonSubmit extends React.Component {
 class ProvinceRow extends React.Component {
     render() {
         return(
-            <div>
-                <p>{this.props.text}</p>
-                <Province isEnabled={true} onProvinceChange={this.props.onProvinceChange} />
-            </div>
+            <tr>
+                <td><p>{this.props.text}</p></td>
+                <td><Province isEnabled={true} onProvinceChange={this.props.onProvinceChange} /></td>
+            </tr>
         );
     }
 }
@@ -212,10 +298,10 @@ class Province extends React.Component {
 class CityRow extends React.Component {
     render() {
         return(
-            <div>
-                <p>{this.props.text}</p>
-                <City isEnabled={true} province={this.props.province} onCityChange={this.props.onCityChange} />
-            </div>
+            <tr>
+                <td><p>{this.props.text}</p></td>
+                <td><City isEnabled={true} province={this.props.province} onCityChange={this.props.onCityChange} /></td>
+            </tr>
         );
     }
 }
@@ -275,7 +361,7 @@ class City extends React.Component {
             if(this.state.city !== null) {
                 return <div>Loading...</div>;
             } else {
-                return <div>Seleccione una provincia</div>
+                return <div><p>Seleccione una provincia</p></div>
             }
         } else {
             return (
@@ -304,70 +390,11 @@ class TextInputRow extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.text}</td>
+                <td><p>{this.props.text}</p></td>
                 <td><input type='text' onChange={this.handleTextChange}/></td>
             </tr>
         );
     }
-}
-
-class LoginControl extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleLoginClick = this.handleLoginClick.bind(this);
-    this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    this.state = {isLoggedIn: false};
-  }
-  handleLoginClick() {
-    this.setState({isLoggedIn: true});
-  }
-  handleLogoutClick() {
-    this.setState({isLoggedIn: false});
-  }
-  render() {
-    const isLoggedIn = this.state.isLoggedIn;
-    return (
-      <div>
-        <Greeting isLoggedIn={isLoggedIn} />
-        {isLoggedIn ? <LogoutButton onClick={this.handleLogoutClick} /> : <LoginButton onClick={this.handleLoginClick} />}
-        <div>
-          The user is <b>{isLoggedIn ? 'currently' : 'not'}</b> logged in.
-        </div>
-      </div>
-    );
-  }
-}
-
-function LoginButton(props) {
-  return (
-    <button onClick={props.onClick}>
-      Login
-    </button>
-  );
-}
-
-function LogoutButton(props) {
-  return (
-    <button onClick={props.onClick}>
-      Logout
-    </button>
-  );
-}
-
-function Greeting(props) {
-  const isLoggedIn = props.isLoggedIn;
-  if (isLoggedIn) {
-    return <UserGreeting />;
-  }
-  return <GuestGreeting />;
-}
-
-function UserGreeting(props) {
-  return <h1>Welcome back!</h1>;
-}
-
-function GuestGreeting(props) {
-  return <h1>Please sign up.</h1>;
 }
 
 class Clock extends React.Component {
