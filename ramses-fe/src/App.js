@@ -20,11 +20,9 @@ class App extends React.Component {
         />
 
 
-        <LoginControl />
         <NavigationBar />
-
-        <PersonForm />
         <Clock />
+        <PersonForm />
       </div>
     );
   }
@@ -34,7 +32,7 @@ class NavigationBar extends React.Component {
 
     render() {
         return (
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="primary" variant="dark" expand="lg">
               <Navbar.Brand href="#home">RAMSES</Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
@@ -66,6 +64,9 @@ class PersonForm extends React.Component {
             province: null
         };
         this.handleProvinceChange = this.handleProvinceChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmitClick = this.handleSubmitClick.bind(this);
+        this.handleCityChange = this.handleCityChange.bind(this);
     }
 
     handleProvinceChange(newProvince) {
@@ -74,16 +75,69 @@ class PersonForm extends React.Component {
         });
     }
 
+    handleCityChange(newCity) {
+        this.setState({
+            city: newCity
+        });
+    }
+
+    handleInputChange(key, value) {
+        this.setState({
+            [key]: value
+        });
+    }
+
+    handleSubmitClick() {
+        console.log(this.state);
+
+        fetch('http://localhost:8090/customers', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: this.state.name,
+            lastName: this.state.lastName,
+            city: this.state.city
+          })
+        })
+    }
+
     render() {
         return (
             <table class='rs-table'>
-                <TextInputRow field={"Nombre"} />
-                <TextInputRow field={"Apellido"} />
-                <TextInputRow field={"Direccion"} />
-                <TextInputRow field={"Telefono"} />
-                <ProvinceRow field={"Provincia"} onProvinceChange={this.handleProvinceChange} />
-                <CityRow field={"Ciudad"} province={this.state.province}/>
+                <TextInputRow field={"name"} text={"Nombre"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"lastName"} text={"Apellido"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"address"} text={"Direccion"} onInputChange={this.handleInputChange} />
+                <TextInputRow field={"phone"} text={"Telefono"} onInputChange={this.handleInputChange} />
+                <ProvinceRow field={"province"} text={"Provincia"} onProvinceChange={this.handleProvinceChange} />
+                <CityRow field={"city"} text={"Ciudad"} onCityChange={this.handleCityChange} province={this.state.province} />
+                <PersonSubmit text={"Registrar"} onSubmitClick={this.handleSubmitClick} />
             </table>
+        );
+    }
+}
+
+class PersonSubmit extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleSubmitClick = this.handleSubmitClick.bind(this);
+    }
+
+    handleSubmitClick() {
+        this.props.onSubmitClick();
+    }
+
+    render() {
+        return(
+            <tr>
+                <td colspan="2">
+                    <button onClick={this.handleSubmitClick}>
+                        {this.props.text}
+                    </button>
+                </td>
+            </tr>
         );
     }
 }
@@ -91,10 +145,10 @@ class PersonForm extends React.Component {
 class ProvinceRow extends React.Component {
     render() {
         return(
-            <tr>
-                <td>{this.props.field}</td>
+            <div>
+                <p>{this.props.text}</p>
                 <Province isEnabled={true} onProvinceChange={this.props.onProvinceChange} />
-            </tr>
+            </div>
         );
     }
 }
@@ -158,10 +212,10 @@ class Province extends React.Component {
 class CityRow extends React.Component {
     render() {
         return(
-            <tr>
-                <td>{this.props.field}</td>
-                <City isEnabled={true} province={this.props.province} />
-            </tr>
+            <div>
+                <p>{this.props.text}</p>
+                <City isEnabled={true} province={this.props.province} onCityChange={this.props.onCityChange} />
+            </div>
         );
     }
 }
@@ -179,10 +233,7 @@ class City extends React.Component {
     }
 
     handleCityChange(e) {
-        console.log("City has changed");
-        this.setState({
-            city: e.target.value
-        });
+        this.props.onCityChange(e.target.value);
     }
 
     componentDidUpdate(prevProps) {
@@ -221,7 +272,11 @@ class City extends React.Component {
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
-            return <div>Loading...</div>;
+            if(this.state.city !== null) {
+                return <div>Loading...</div>;
+            } else {
+                return <div>Seleccione una provincia</div>
+            }
         } else {
             return (
                 <select onChange={this.handleCityChange} >
@@ -237,11 +292,20 @@ class City extends React.Component {
 }
 
 class TextInputRow extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleTextChange = this.handleTextChange.bind(this);
+    }
+
+    handleTextChange(e) {
+        this.props.onInputChange(this.props.field, e.target.value);
+    }
+
     render() {
         return (
             <tr>
-                <td>{this.props.field}</td>
-                <td><input type='text'/></td>
+                <td>{this.props.text}</td>
+                <td><input type='text' onChange={this.handleTextChange}/></td>
             </tr>
         );
     }
@@ -331,9 +395,8 @@ class Clock extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Hello, world!</h1>
-        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      <div align="right" class="clock">
+        <h4>It is {this.state.date.toLocaleTimeString()}</h4>
       </div>
     );
   }

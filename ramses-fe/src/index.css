@@ -17,3 +17,12 @@ code {
 	width: 60%;
 	margin: auto;
 }
+
+.clock {
+    padding-right: 20px;
+}
+
+.rs-navbar {
+    background: #444444;
+    margin: 100px;
+}
