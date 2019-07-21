@@ -15,8 +15,10 @@ class CustomerUpdateForm extends React.Component {
     }
 
     componentWillMount() {
-        console.log("Inside componentWillMount");
-        fetch("http://localhost:8090/customers/1", {
+        let params = new URLSearchParams(window.location.search);
+        let customerId = params.get("customerId");
+
+        fetch("http://localhost:8090/customers/" + customerId, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -30,7 +32,7 @@ class CustomerUpdateForm extends React.Component {
                     this.setState({
                         isLoaded: true,
                         customer: result
-                    }, console.log("ve" + this.state.customer.name));
+                    });
                 },
                 (error) => {
                     this.setState({
@@ -60,6 +62,7 @@ class CustomerUpdateForm extends React.Component {
     }
 
     handleInputChange(key, value) {
+        console.log(key + value);
         this.setState({
             customer: {
                   ...this.state.customer,
@@ -83,10 +86,10 @@ class CustomerUpdateForm extends React.Component {
     }
 
     render() {
-//        console.log("Este es el customer en el update form");
-//        console.log(this.state.customer);
         return (
             <table className='rs-table'>
+                <TextInputRow field={"id"} text={"Id"} onInputChange={this.handleInputChange}
+                    preload={this.state.customer.id} disabled="false" />
                 <TextInputRow field={"name"} text={"Nombre"} onInputChange={this.handleInputChange}
                     preload={this.state.customer.name} />
                 <TextInputRow field={"lastName"} text={"Apellido"} onInputChange={this.handleInputChange}
@@ -107,10 +110,14 @@ class CustomerUpdateForm extends React.Component {
                     preload={this.state.customer.neighbourhood} />
                 <TextInputRow field={"fiscalNumber"} text={"Numero fiscal"} onInputChange={this.handleInputChange}
                     preload={this.state.customer.fiscalNumber} />
+                <TextInputRow field={"account"} text={"Numero de cuenta"} onInputChange={this.handleInputChange}
+                    preload={this.state.customer.account} disabled="false" />
                 <TextInputRow field={"accountDays"} text={"Dias en CC"} onInputChange={this.handleInputChange}
                     preload={this.state.customer.accountDays} />
                 <TextInputRow field={"accountAmount"} text={"Monto en CC"} onInputChange={this.handleInputChange}
                     preload={this.state.customer.accountAmount} />
+                <CheckboxInputRow field={"enabled"} text={"Activo"} onInputChange={this.handleInputChange}
+                    preload={this.state.customer.enabled} />
                 <ProvinceRow field={"province"} text={"Provincia"} onProvinceChange={this.handleProvinceChange}
                     preload={this.state.customer.province} />
                 <CityRow field={"city"} text={"Ciudad"} onCityChange={this.handleCityChange}
@@ -369,7 +376,32 @@ class TextInputRow extends React.Component {
         return (
             <tr>
                 <td><p>{this.props.text}</p></td>
-                <td><input type='text' onChange={this.handleTextChange} value={this.props.preload} /></td>
+                <td>
+                    <input type='text' onChange={this.handleTextChange} value={this.props.preload} disabled={this.props.disabled} />
+                </td>
+            </tr>
+        );
+    }
+}
+
+class CheckboxInputRow extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+    }
+
+    handleCheckboxChange(e) {
+        let active = !this.props.preload;
+        this.props.onInputChange(this.props.field, active);
+    }
+
+    render() {
+        return (
+            <tr>
+                <td><p>{this.props.text}</p></td>
+                <td>
+                    <input type='checkbox' onChange={this.handleCheckboxChange} checked={this.props.preload===true} />
+                </td>
             </tr>
         );
     }

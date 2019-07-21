@@ -16,6 +16,7 @@ class CustomerUpdateView extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            id: customer.id,
             name: customer.name,
             lastName: customer.lastName,
             email: customer.email,
@@ -26,9 +27,11 @@ class CustomerUpdateView extends React.Component {
             streetNumber: customer.streetNumber,
             neighbourhood: customer.neighbourhood,
             fiscalNumber: customer.fiscalNumber,
+            account: customer.account,
             accountDays: customer.accountDays,
             accountAmount: customer.accountAmount,
-            vatCondition: customer.vatCondition
+            vatCondition: customer.vatCondition,
+            enabled: customer.enabled
           })
         })
     }

@@ -47,7 +47,7 @@ class CustomerList extends React.Component {
             return (
                 <table class='rs-table'>
                     {items.map(item => (
-                        <tr class="rs-table-row">
+                        <tr className={"rs-table-row " + (item.enabled ? "row-enabled" : 'row-disabled')}>
                             <td>{item.id}</td>
                             <td>{item.name}</td>
                             <td>{item.lastName}</td>
