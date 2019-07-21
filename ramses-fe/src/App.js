@@ -10,8 +10,11 @@ import Button from 'react-bootstrap/Button';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import CustomerList from './CustomerList.js';
-import CustomerUpdateView from './CustomerUpdate.js';
 import CustomerCreateView from './CustomerCreate.js';
+import CustomerUpdateView from './CustomerUpdate.js';
+
+import ProductCreateView from './product/ProductCreate.js';
+
 import NavigationBar from './RamsesNavbar.js';
 
 class App extends React.Component {
@@ -30,6 +33,8 @@ class App extends React.Component {
             <Route path="/customerCreate/" component={CustomerCreateView} />
             <Route path="/customerEdit/" component={CustomerUpdateView} />
             <Route path="/customerList/" component={CustomerList} />
+
+            <Route path="/productCreate/" component={ProductCreateView} />
         </Router>
 
       </div>

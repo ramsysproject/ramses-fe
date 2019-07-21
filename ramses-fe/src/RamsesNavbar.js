@@ -19,6 +19,7 @@ class NavigationBar extends React.Component {
                 <Nav className="mr-auto">
                   <Nav.Link href="#home">Inicio</Nav.Link>
                   <Nav.Link href="#link">Link</Nav.Link>
+
                   <NavDropdown title="Clientes" id="basic-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">
                         <Link to="/customerCreate/">CreateCustomer</Link>
@@ -32,6 +33,19 @@ class NavigationBar extends React.Component {
                         <Link to="/customerList/">Listado de clientes</Link>
                     </NavDropdown.Item>
                   </NavDropdown>
+
+                    <NavDropdown title="Productos" id="basic-nav-dropdown">
+                      <NavDropdown.Item href="#action/3.1">
+                          <Link to="/productCreate/">Crear producto</Link>
+                      </NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.2">
+                          <Link to="/productEdit/">Editar producto</Link>
+                      </NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action/3.4">
+                          <Link to="/productList/">Listado de productos</Link>
+                      </NavDropdown.Item>
+                    </NavDropdown>
                 </Nav>
                 <Form inline>
                   <FormControl type="text" placeholder="Search" className="mr-sm-2" />
