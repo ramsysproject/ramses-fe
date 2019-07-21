@@ -16,6 +16,14 @@ code {
 	background: #FFFFFF;
 	width: 60%;
 	margin: auto;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.rs-table-row {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 15px;
 }
 
 .clock {
