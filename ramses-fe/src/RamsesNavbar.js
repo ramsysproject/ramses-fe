@@ -45,6 +45,10 @@ class NavigationBar extends React.Component {
                       <NavDropdown.Item href="#action/3.4">
                           <Link to="/productList/">Listado de productos</Link>
                       </NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action/3.4">
+                          <Link to="/productTypeCreate/">Crear tipo de producto</Link>
+                      </NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
                 <Form inline>

@@ -12,8 +12,9 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import CustomerList from './CustomerList.js';
 import CustomerCreateView from './CustomerCreate.js';
 import CustomerUpdateView from './CustomerUpdate.js';
-
 import ProductCreateView from './product/ProductCreate.js';
+import ProductList from './product/ProductList.js';
+import ProductTypeCreateView from './productType/ProductTypeCreate.js';
 
 import NavigationBar from './RamsesNavbar.js';
 
@@ -35,6 +36,9 @@ class App extends React.Component {
             <Route path="/customerList/" component={CustomerList} />
 
             <Route path="/productCreate/" component={ProductCreateView} />
+            <Route path="/productList" component={ProductList} />
+
+            <Route path="/productTypeCreate/" component={ProductTypeCreateView} />
         </Router>
 
       </div>

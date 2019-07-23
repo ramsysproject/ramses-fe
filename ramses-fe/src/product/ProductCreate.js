@@ -19,13 +19,11 @@ class ProductCreateView extends React.Component {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            id: product.id,
             vatType: product.vatType,
             productType: product.productType,
             name: product.name,
             description: product.description,
-            productOperation: product.productOperation,
-            status: product.status
+            productOperation: product.productOperation
           })
         })
     }
