@@ -9,6 +9,9 @@ class CustomerUpdateView extends React.Component {
 
     // This function handles the submit click in the form
     handleSubmitClick(customer) {
+        this.setState({
+            customerId: customer.id
+        });
         fetch('http://localhost:8090/customers/' + customer.id, {
           method: 'PUT',
           headers: {
@@ -38,7 +41,7 @@ class CustomerUpdateView extends React.Component {
 
     render() {
         return (
-            <CustomerUpdateForm action="Update" onSubmitClick={this.handleSubmitClick} customerId="1"/>
+            <CustomerUpdateForm action="Update" onSubmitClick={this.handleSubmitClick} customerId={this.state.customerId} />
         );
     }
 }

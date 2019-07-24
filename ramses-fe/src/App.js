@@ -13,6 +13,7 @@ import CustomerList from './CustomerList.js';
 import CustomerCreateView from './CustomerCreate.js';
 import CustomerUpdateView from './CustomerUpdate.js';
 import ProductCreateView from './product/ProductCreate.js';
+import ProductUpdateView from './product/ProductUpdate.js';
 import ProductList from './product/ProductList.js';
 import ProductTypeCreateView from './productType/ProductTypeCreate.js';
 
@@ -36,7 +37,8 @@ class App extends React.Component {
             <Route path="/customerList/" component={CustomerList} />
 
             <Route path="/productCreate/" component={ProductCreateView} />
-            <Route path="/productList" component={ProductList} />
+            <Route path="/productEdit/" component={ProductUpdateView} />
+            <Route path="/productList/" component={ProductList} />
 
             <Route path="/productTypeCreate/" component={ProductTypeCreateView} />
         </Router>
